@@ -15,9 +15,11 @@ class DressModelController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $dressModels = DressModel::with('user')->get();
+        $name = $request->get('name');
+        $brand = $request->get('brand');
+        $dressModels = DressModel::orderBy('id', 'DESC')->name($name)->brand($brand)->with('user')->with('dress')->get();
         return DressModelResource::collection($dressModels);
     }
 
@@ -65,7 +67,7 @@ class DressModelController extends Controller
      */
     public function get($id)
     {
-        $dressModel =  DressModel::where('id', $id)->with('user')->first();
+        $dressModel =  DressModel::where('id', $id)->with('user')->with('dress')->first();
         return new DressModelResource($dressModel);
     }
 

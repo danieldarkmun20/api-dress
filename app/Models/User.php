@@ -77,4 +77,9 @@ class User extends Authenticatable implements JWTSubject
         if ($email)
             return $query->where('email', 'LIKE', "%$email%");
     }
+
+    public function client()
+    {
+        return $this->hasOne('App\Models\Client');
+    }
 }

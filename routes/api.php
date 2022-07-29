@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\DressModelController;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -45,5 +46,19 @@ Route::group([
     Route::post('/', [UserController::class, 'store']); 
     Route::put('/', [UserController::class, 'update']); 
     Route::delete('/{id}', [UserController::class, 'destroy']); 
+});
+
+Route::group([
+
+    'middleware' => 'api',
+    'prefix' => 'dressmodels'
+
+], function ($router) {
+
+    Route::get('/', [DressModelController::class, 'index']); 
+    Route::get('get/{id}', [DressModelController::class, 'get']); 
+    Route::post('/', [DressModelController::class, 'store']); 
+    Route::put('/', [DressModelController::class, 'update']); 
+    Route::delete('/{id}', [DressModelController::class, 'destroy']); 
 });
 

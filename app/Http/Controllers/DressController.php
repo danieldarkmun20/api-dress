@@ -22,17 +22,6 @@ class DressController extends Controller
         $dresses = Dress::orderBy('id', 'DESC')->status($status)->code($code)->with('user')->get();
         return DressRources::collection($dresses);
     }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
     /**
      * Store a newly created resource in storage.
      *
@@ -46,17 +35,6 @@ class DressController extends Controller
             'message' => 'El item ha sido registrado existosamente!',
             'dress' => $dress
         ], 201);
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Dress  $dress
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Dress $dress)
-    {
-        //
     }
 
     /**

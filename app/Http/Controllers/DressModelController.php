@@ -23,15 +23,6 @@ class DressModelController extends Controller
         return DressModelResource::collection($dressModels);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
 
     /**
      * Store a newly created resource in storage.
@@ -46,17 +37,6 @@ class DressModelController extends Controller
             'message' => 'Modelo de vestido registrado existosamente!',
             'dressModel' => $dressModel
         ], 201);
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\DressModel  $dressModel
-     * @return \Illuminate\Http\Response
-     */
-    public function show(DressModel $dressModel)
-    {
-        //
     }
 
     /**
@@ -104,7 +84,7 @@ class DressModelController extends Controller
         $dressModel = DressModel::findOrFail($id);
         $dressModel->delete();
         return response()->json([
-            'message' => 'Usuario Eliminado existosamente!',
+            'message' => 'El modelo del vestido ha sido eliminado existosamente!',
         ], 201);
     }
 }

@@ -24,4 +24,15 @@ class Dress extends Model
     {
         return $this->belongsTo('App\Models\DressModel');
     }
+
+    public function scopeStatus($query, $status)
+    {
+        if ($status)
+            return $query->where('status', 'LIKE', "%$status%");
+    }
+    public function scopeCode($query, $code)
+    {
+        if ($code)
+            return $query->where('code', 'LIKE', "%$code%");
+    }
 }

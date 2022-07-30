@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Dress;
 use App\Http\Requests\StoreDressRequest;
 use App\Http\Requests\UpdateDressRequest;
+use App\Http\Resources\DressRources;
+use Illuminate\Http\Request;
 
 class DressController extends Controller
 {
@@ -13,9 +15,12 @@ class DressController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        $status = $request->get('status');
+        $code = $request->get('code');
+        $dresses = Dress::orderBy('id', 'DESC')->status($status)->code($code)->with('user')->get();
+        return DressRources::collection($dresses);
     }
 
     /**
@@ -36,7 +41,11 @@ class DressController extends Controller
      */
     public function store(StoreDressRequest $request)
     {
-        //
+        $dress = Dress::create($request->all());
+        return response()->json([
+            'message' => 'El item ha sido registrado existosamente!',
+            'dress' => $dress
+        ], 201);
     }
 
     /**
@@ -56,9 +65,16 @@ class DressController extends Controller
      * @param  \App\Models\Dress  $dress
      * @return \Illuminate\Http\Response
      */
-    public function edit(Dress $dress)
+    public function get($id)
     {
-        //
+        $dress = Dress::where('id', $id)->with('user')->first();
+        if (isset($dress->id)) {
+            return new DressRources($dress);
+        }
+        return response()->json([
+            'message' => 'El item no esta registrado!',
+        ], 404);
+        return new DressRources($dress);
     }
 
     /**
@@ -68,9 +84,19 @@ class DressController extends Controller
      * @param  \App\Models\Dress  $dress
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdateDressRequest $request, Dress $dress)
+    public function update(Request $request)
     {
-        //
+        $dress = Dress::find($request->id);
+        if (isset($dress->id)) {
+            $dress->update($request->all());
+            return response()->json([
+                'message' => 'El item ha sido Actualizado existosamente!',
+                'dress' => $dress
+            ], 201);
+        }
+        return response()->json([
+            'message' => 'El item no esta registrado!',
+        ], 404);
     }
 
     /**
@@ -79,8 +105,17 @@ class DressController extends Controller
      * @param  \App\Models\Dress  $dress
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Dress $dress)
+    public function destroy($id)
     {
-        //
+        $dress = Dress::find($id);
+        if (isset($dress->id)) {
+            $dress->delete();
+            return response()->json([
+                'message' => 'El item ha sido eliminado existosamente!',
+            ], 201);
+        }
+        return response()->json([
+            'message' => 'El item no esta registrado!',
+        ], 404);
     }
 }

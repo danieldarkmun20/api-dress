@@ -52,7 +52,6 @@ class DressController extends Controller
         return response()->json([
             'message' => 'El item no esta registrado!',
         ], 404);
-        return new DressRources($dress);
     }
 
     /**
@@ -62,7 +61,7 @@ class DressController extends Controller
      * @param  \App\Models\Dress  $dress
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request)
+    public function update(UpdateDressRequest $request)
     {
         $dress = Dress::find($request->id);
         if (isset($dress->id)) {

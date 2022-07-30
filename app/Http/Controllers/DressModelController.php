@@ -48,7 +48,12 @@ class DressModelController extends Controller
     public function get($id)
     {
         $dressModel =  DressModel::where('id', $id)->with('user')->with('dress')->first();
-        return new DressModelResource($dressModel);
+        if (isset($dressModel->id)) {
+            return new DressModelResource($dressModel);
+        }
+        return response()->json([
+            'message' => 'El Modelo de vestido no esta registrado!',
+        ], 404);
     }
 
     /**
@@ -58,18 +63,18 @@ class DressModelController extends Controller
      * @param  \App\Models\DressModel  $dressModel
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request)
+    public function update(UpdateDressModelRequest $request)
     {
         $dressModel = DressModel::find($request->id);
         if (isset($dressModel->id)) {
             $dressModel->update($request->all());
             return response()->json([
-                'message' => 'El dress model ha sido Actualizado existosamente!',
+                'message' => 'El Modelo de vestido ha sido Actualizado existosamente!',
                 'dressModel' => $dressModel
             ], 201);
         }
         return response()->json([
-            'message' => 'El dress model no esta registrado!',
+            'message' => 'El Modelo de vestido no esta registrado!',
         ], 404);
     }
 
@@ -81,10 +86,15 @@ class DressModelController extends Controller
      */
     public function destroy($id)
     {
-        $dressModel = DressModel::findOrFail($id);
-        $dressModel->delete();
+        $dressModel = DressModel::find($id);
+        if (isset($dressModel->id)) {
+            $dressModel->delete();
+            return response()->json([
+                'message' => 'El modelo del vestido ha sido eliminado existosamente!',
+            ], 201);
+        }
         return response()->json([
-            'message' => 'El modelo del vestido ha sido eliminado existosamente!',
-        ], 201);
+            'message' => 'El modelo del vestido no esta registrado!',
+        ], 404);;
     }
 }

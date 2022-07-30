@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\UpdateUserRequest;
 use App\Http\Requests\UserRequest;
 use App\Http\Resources\UserResoruce;
 use App\Models\User;
@@ -52,8 +53,13 @@ class UserController extends Controller
      */
     public function get($id)
     {
-        $user = User::findOrFail($id);
-        return new UserResoruce($user);
+        $user = User::where('id', $id)->first();
+        if (isset($user->id)) {
+            return new UserResoruce($user);
+        }
+        return response()->json([
+            'message' => 'El usuario no esta registrado!',
+        ], 404);
     }
 
     /**
@@ -63,15 +69,20 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request)
+    public function update(UpdateUserRequest $request)
     {
-        $user = User::findOrFail($request->id);
-        $request['password'] = isset($request['password']) ? bcrypt($request['password']) : $user->password;
-        $user->update($request->all());
+        $user = User::find($request->id);
+        if (isset($user->id)) {
+            $request['password'] = isset($request['password']) ? bcrypt($request['password']) : $user->password;
+            $user->update($request->all());
+            return response()->json([
+                'message' => 'Usuario Actualizado existosamente!',
+                'user' => $user
+            ], 201);
+        }
         return response()->json([
-            'message' => 'Usuario Actualizado existosamente!',
-            'user' => $user
-        ], 201);
+            'message' => 'El usuario no esta registrado!',
+        ], 404);
     }
 
     /**
@@ -83,9 +94,14 @@ class UserController extends Controller
     public function destroy($id)
     {
         $user = User::findOrFail($id);
-        $user->delete();
+        if (isset($user->id)) {
+            $user->delete();
+            return response()->json([
+                'message' => 'Usuario Eliminado existosamente!',
+            ], 201);
+        }
         return response()->json([
-            'message' => 'Usuario Eliminado existosamente!',
-        ], 201);
+            'message' => 'El usuario no esta registrado!',
+        ], 404);
     }
 }
